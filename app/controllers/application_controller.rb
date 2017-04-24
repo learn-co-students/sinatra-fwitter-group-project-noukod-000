@@ -66,7 +66,7 @@ class ApplicationController < Sinatra::Base
     if @tweet.user == Helpers.current_user(session)
       erb :'/tweets/show_tweet'
     else
-      redirect to 'users/login'
+      redirect to '/login'
     end
   end
 
@@ -75,7 +75,7 @@ class ApplicationController < Sinatra::Base
     if @tweet.user == Helpers.current_user(session)
         erb :'/tweets/edit_tweet'
     else
-      redirect to 'users/login'
+      redirect to '/login'
     end
   end
 
@@ -107,6 +107,6 @@ class ApplicationController < Sinatra::Base
     else
       redirect to '/'
     end
-    redirect to '/users/login'
+    redirect to '/login'
   end
 end
