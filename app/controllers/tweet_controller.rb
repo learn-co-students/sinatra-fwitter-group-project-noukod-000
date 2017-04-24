@@ -1,14 +1,7 @@
 
 require './config/environment'
 
-class TweetController < Sinatra::Base
-
-  configure do
-    set :public_folder, 'public'
-    set :views, 'app/views'
-    enable :sessions
-		set :session_secret, "password_security"
-  end    
+class TweetController < ApplicationController
 
   get '/tweets' do
     if Helpers.is_logged_in?(session)
@@ -26,7 +19,7 @@ class TweetController < Sinatra::Base
     else
       erb :'tweets/create_tweet'
     end
-    
+
   end
 
   post '/tweets' do
@@ -41,11 +34,11 @@ class TweetController < Sinatra::Base
     end
     redirect to '/tweets'
   end
-  
+
 
   get '/tweets/:id' do
     redirect to '/login' unless Helpers.is_logged_in?(session)
-    
+
     @tweet = Tweet.find(params[:id])
     if @tweet.user == Helpers.current_user(session)
       erb :'/tweets/show_tweet'
