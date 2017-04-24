@@ -58,7 +58,13 @@ class ApplicationController < Sinatra::Base
   end
 
   get '/tweets/new' do
-    erb :'tweets/create_tweet'
+    user = Helpers.current_user(session)
+    if user.nil?
+      redirect to :'users/login'
+    else
+      erb :'tweets/create_tweet'
+    end
+    
   end
 
   post '/tweets' do
@@ -66,7 +72,7 @@ class ApplicationController < Sinatra::Base
     if user.nil?
       redirect to :'users/login'
     elsif params[:tweet][:content].empty?
-      redirect to :'tweets/create_tweet'
+      redirect to :'tweets/new'
     else
       user.tweets.build({content: params[:tweet][:content]})
       user.save
