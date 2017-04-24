@@ -1,9 +1,4 @@
-<% @user = Helpers.current_user(session) %>
-<% if Helpers.is_logged_in?(session) %>
 
 	<h1>You tweeted:</h1>
 	<h2><%= @tweet.content %></h2>
 
-<% else %>
-  <a href="/users/login" />
-<% end %>
