@@ -1,6 +1,3 @@
-
-require './config/environment'
-
 class TweetController < ApplicationController
 
   get '/tweets' do
