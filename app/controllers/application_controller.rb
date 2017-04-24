@@ -40,18 +40,31 @@ class ApplicationController < Sinatra::Base
       redirect to 'users/login'
     end 
   end
-  
+
+  get '/tweets/:id/edit' do
+    @tweet = Tweet.find(params[:id])
+    if @tweet.user == Helpers.current_user(session)
+        erb :'tweets/edit_tweet'
+    else
+      redirect to 'users/login'
+    end 
+  end
+
+  patch '/tweets/:id' do
+    puts params
+    @tweet = Tweet.find(params[:id])
+    @tweet.update(params[:tweet])
+    @tweet.save
+    redirect "tweets/#{@tweet.id}"
+
+  end
+
   get '/logout' do
-    if Helper.is_logged_in?(session)
+    if Helpers.is_logged_in?(session)
       session.clear
     else
       redirect to '/'  
     end  
     redirect to 'users/login'
-  end
-
-  get '/tweets' do
-    @tweets = Tweet.all
-    erb :'tweets/tweets'
   end
 end
