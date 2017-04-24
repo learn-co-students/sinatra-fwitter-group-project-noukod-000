@@ -38,13 +38,9 @@ class TweetController < ApplicationController
 
   get '/tweets/:id' do
     redirect to '/login' unless Helpers.is_logged_in?(session)
-
     @tweet = Tweet.find(params[:id])
-    if @tweet.user == Helpers.current_user(session)
-      erb :'/tweets/show_tweet'
-    else
-      redirect to '/login'
-    end
+
+    erb :'/tweets/show_tweet'
   end
 
   get '/tweets/:id/edit' do
@@ -73,12 +69,13 @@ class TweetController < ApplicationController
 
   delete '/tweets/:id/delete' do
     if Helpers.is_logged_in?(session)
+      @tweet = Tweet.find(params[:id])
       if @tweet.user == Helpers.current_user(session)
         @tweet = Tweet.find_by_id(params[:id])
         @tweet.delete
         redirect to '/tweets'
       else
-        redirect to '/tweets'
+        redirect to '/tweets/'
       end
     else
       redirect to '/login'
