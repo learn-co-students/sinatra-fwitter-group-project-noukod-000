@@ -22,6 +22,10 @@ class ApplicationController < Sinatra::Base
     redirect to '/'
   end
 
+  get '/login' do
+    erb :'users/login'
+  end
+
   get '/tweets' do
     if Helpers.is_logged_in?(session)
       @tweets = Tweet.all
