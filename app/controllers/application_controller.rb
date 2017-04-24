@@ -1,3 +1,4 @@
+
 require './config/environment'
 
 class ApplicationController < Sinatra::Base
@@ -7,12 +8,12 @@ class ApplicationController < Sinatra::Base
     set :views, 'app/views'
   end
 
-<<<<<<< HEAD
   get '/' do
     erb :index
-=======
+  end
+  
+
   get '/signup' do
->>>>>>> bb0f5b0445a5ff8d3b80f9ae452361827fd19f87
   end
 
 end
