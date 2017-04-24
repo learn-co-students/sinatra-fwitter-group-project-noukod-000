@@ -16,4 +16,10 @@ class ApplicationController < Sinatra::Base
   get '/signup' do
   end
 
+  get '/tweets' do
+    @tweets = Tweet.all
+    erb :'tweets/tweets'
+  end
+  
+
 end
