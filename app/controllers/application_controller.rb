@@ -82,8 +82,9 @@ class ApplicationController < Sinatra::Base
   
 
   get '/tweets/:id' do
+    redirect to '/login' unless Helpers.is_logged_in?(session)
+    
     @tweet = Tweet.find(params[:id])
-
     if @tweet.user == Helpers.current_user(session)
       erb :'/tweets/show_tweet'
     else
@@ -92,6 +93,8 @@ class ApplicationController < Sinatra::Base
   end
 
   get '/tweets/:id/edit' do
+    redirect to '/login' unless Helpers.is_logged_in?(session)
+
     @tweet = Tweet.find(params[:id])
     if @tweet.user == Helpers.current_user(session)
         erb :'/tweets/edit_tweet'
@@ -102,9 +105,14 @@ class ApplicationController < Sinatra::Base
 
   patch '/tweets/:id' do
     @tweet = Tweet.find(params[:id])
+
+    if params[:tweet][:content].empty?
+      redirect to "/tweets/#{@tweet.id}/edit"
+    end
+
     @tweet.update(params[:tweet])
     @tweet.save
-    redirect "/tweets/#{@tweet.id}"
+    redirect to "/tweets/#{@tweet.id}"
 
   end
 
