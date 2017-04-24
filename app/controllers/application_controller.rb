@@ -27,6 +27,12 @@ class ApplicationController < Sinatra::Base
     @tweets = Tweet.all
     erb :'tweets/tweets'
   end
+
+  get '/tweets/:id' do
+    @tweet = Tweet.find(params[:id])
+    erb :'tweets/show'
+  end
+  
   
 
 end
