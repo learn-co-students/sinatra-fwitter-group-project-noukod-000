@@ -23,4 +23,10 @@ class ApplicationController < Sinatra::Base
     redirect to '/'
   end
 
+  get '/tweets' do
+    @tweets = Tweet.all
+    erb :'tweets/tweets'
+  end
+  
+
 end
