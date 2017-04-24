@@ -72,7 +72,7 @@ class TweetController < ApplicationController
         @tweet.delete
         redirect to '/tweets'
       else
-        redirect to '/tweets/'
+        redirect to '/tweets'
       end
     else
       redirect to '/login'
