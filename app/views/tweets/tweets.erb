@@ -3,6 +3,6 @@
 
 	<hr>
 	<% @tweets.each do |tweet| %>
-	  <h4> <%= tweet.content %> <h4>
+	  <h4> <%= tweet.user.username %> : <%= tweet.content %> <h4>
 	  <hr>
 	<% end %>
