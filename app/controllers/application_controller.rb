@@ -15,7 +15,7 @@ class ApplicationController < Sinatra::Base
       end
 
       def current_user
-        User.find_by_id(session[:id])
+        User.find_by_id(session[:user_id])
       end
   end
 
@@ -33,10 +33,13 @@ class ApplicationController < Sinatra::Base
 
   post "/login" do
     # binding.pry
-    user = User.find_by(:username => params[:username])
-   if user && user.authenticate(params[:password])
+    user = User.find_by(:username => @params[:user][:username])
+
+   if user && user.authenticate(@params[:user][:password])
      session[:user_id] = user.id
      redirect("/tweets")
+   else
+     redirect("/")
    end
   end
 
