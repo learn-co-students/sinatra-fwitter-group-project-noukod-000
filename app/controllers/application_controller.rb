@@ -5,137 +5,64 @@ class ApplicationController < Sinatra::Base
   configure do
     set :public_folder, 'public'
     set :views, 'app/views'
+    enable :sessions
+    set :session_secret, "password_security"
   end
+
   get '/' do
-      erb :index
-    end
+    @user = current_user if is_logged_in?
+   erb :index
+  end
 
-    get "/signup" do
-      if Helpers.is_logged_in?(session)
-        redirect to '/tweets'
+  get '/signup' do
+    if is_logged_in?
+     redirect '/tweets'
+    else
+     erb :'/users/create_user'
+    end
+  end
+
+    post '/signup' do
+      user = User.new(:username => params[:username], :email => params[:email], :password => params[:password])
+      if user.save && user.username != "" && user.email != ""
+       session[:user_id] = user.id
+       redirect to "/tweets"
+      else
+       redirect '/signup'
       end
-
-      erb :"/users/create_user"
+      redirect to "/tweets"
     end
 
-    post "/signup" do
-      params.each do |label, input|
-        if input.empty?
-          flash[:new_user_error] = "Please enter a value for #{label}"
-          redirect to '/signup'
-        end
-      end
-
-      user = User.create(:username => params["username"], :email => params["email"], :password => params["password"])
-      session[:user_id] = user.id
-
-      redirect to '/tweets'
+  get '/login' do
+    if is_logged_in?
+     redirect '/tweets'
+    else
+     erb :'/users/login'
     end
-
-    get '/login' do
-      if Helpers.is_logged_in?(session)
-        redirect to '/tweets'
-      end
-
-      erb :"/users/login"
-    end
+  end
 
     post '/login' do
-      user = User.find_by(:username => params["username"])
+      user = User.find_by(:username => params[:username])
 
       if user && user.authenticate(params[:password])
-        session[:user_id] = user.id
-        redirect to '/tweets'
-      else
-        flash[:login_error] = "Incorrect login. Please try again."
-        redirect to '/login'
+       session[:user_id] = user.id
       end
+      redirect '/tweets'
     end
 
-    get '/tweets' do
-      if !Helpers.is_logged_in?(session)
-        redirect to '/login'
-      end
-      @tweets = Tweet.all
-      @user = Helpers.current_user(session)
-      erb :"/tweets/tweets"
+    get "/users/:slug" do
+      @user = User.find_by_slug(params[:slug])
+      erb :'/users/show'
     end
 
-    get '/tweets/new' do
-      if !Helpers.is_logged_in?(session)
-        redirect to '/login'
-      end
-      erb :"/tweets/create_tweet"
-    end
+  get '/logout' do
+    session.clear
+    redirect "/login"
+  end
 
-    post '/tweets' do
-      user = Helpers.current_user(session)
-      if params["content"].empty?
-        flash[:empty_tweet] = "Please enter content for your tweet"
-        redirect to '/tweets/new'
-      end
-      tweet = Tweet.create(:content => params["content"], :user_id => user.id)
 
-      redirect to '/tweets'
-    end
-
-    get '/tweets/:id' do
-      if !Helpers.is_logged_in?(session)
-        redirect to '/login'
-      end
-      @tweet = Tweet.find(params[:id])
-      erb :"tweets/show_tweet"
-    end
-
-    get '/tweets/:id/edit' do
-      if !Helpers.is_logged_in?(session)
-        redirect to '/login'
-      end
-      @tweet = Tweet.find(params[:id])
-      if Helpers.current_user(session).id != @tweet.user_id
-        flash[:wrong_user_edit] = "Sorry you can only edit your own tweets"
-        redirect to '/tweets'
-      end
-      erb :"tweets/edit_tweet"
-    end
-
-    patch '/tweets/:id' do
-      tweet = Tweet.find(params[:id])
-      if params["content"].empty?
-        flash[:empty_tweet] = "Please enter content for your tweet"
-        redirect to "/tweets/#{params[:id]}/edit"
-      end
-      tweet.update(:content => params["content"])
-      tweet.save
-
-      redirect to "/tweets/#{tweet.id}"
-    end
-
-    post '/tweets/:id/delete' do
-      if !Helpers.is_logged_in?(session)
-        redirect to '/login'
-      end
-      @tweet = Tweet.find(params[:id])
-      if Helpers.current_user(session).id != @tweet.user_id
-        flash[:wrong_user] = "Sorry you can only delete your own tweets"
-        redirect to '/tweets'
-      end
-      @tweet.delete
-      redirect to '/tweets'
-    end
-
-    get '/users/:slug' do
-      slug = params[:slug]
-      @user = User.find_by_slug(slug)
-      erb :"users/show"
-    end
-
-    get '/logout' do
-      if Helpers.is_logged_in?(session)
-        session.clear
-        redirect to '/login'
-      else
-        redirect to '/'
+    post '/tweet' do
+    if !params[:content].empty?
       end
     end
 end
