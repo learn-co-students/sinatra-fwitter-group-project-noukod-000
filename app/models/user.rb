@@ -1,25 +1,13 @@
 class User < ActiveRecord::Base
-  has_many :tweets
+  validates :username, presence: true
+  validates :email, presence: true
   has_secure_password
-
-  def slug
-    username = self.username
-    slug = username.downcase.strip.gsub(' ', '-').gsub(/[^\w-]/, '')
-  end
+  has_many :tweets
 
   def self.find_by_slug(slug)
-    @slug = slug
-    format_slug_beginning
-    results = self.where("username LIKE ?", @short_slug)
-    results.detect do |result|
-      result.slug === @slug
-    end
+    self.all.find{ |user| user.slug == slug }
   end
-
-  def self.format_slug_beginning
-    slug_beginning = @slug.split("-")[0]
-    slug_beginning.prepend("%")
-    slug_beginning << "%"
-    @short_slug = slug_beginning
+  def slug
+    self.username.gsub(" ", "-").downcase
   end
 end
