@@ -1,7 +1,6 @@
 class TweetsController < ApplicationController
 
   get '/tweets' do
-    # binding.pry
     if Helpers.is_logged_in? session
       @user = Helpers.current_user session
       erb :"tweets/tweets"
@@ -19,7 +18,6 @@ class TweetsController < ApplicationController
   end
 
   post '/tweets' do
-    # binding.pry
     if Helpers.is_logged_in? session
       tweet = Helpers.current_user(session).tweets.build(content: params[:content])
       if tweet.save

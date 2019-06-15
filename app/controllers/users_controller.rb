@@ -7,7 +7,6 @@ class UsersController < ApplicationController
   end
 
   get "/signup" do
-    # binding.pry
     if Helpers.is_logged_in? session
       redirect '/tweets'
     else
@@ -16,14 +15,12 @@ class UsersController < ApplicationController
   end
 
   post "/signup" do
-    # binding.pry
     user = User.new params
 
     if user.save
       session[:user_id] = user.id
       redirect "/tweets"
     else
-      # flash[:signup] = "Failed to signup, missing some parameters."
       redirect "/signup"
     end
   end
@@ -37,14 +34,12 @@ class UsersController < ApplicationController
   end
 
   post '/login' do
-    # binding.pry
     user = User.find_by(username: params[:username]) unless params[:username].empty?
 
     if user && user.authenticate(params[:password])
       session[:user_id] = user.id
       redirect "/tweets"
     else
-      # flash[:error_login] = "Failed to login, something wrong with yours informations."
       redirect "/signup"
     end
   end
