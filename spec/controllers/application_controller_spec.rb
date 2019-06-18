@@ -65,7 +65,7 @@ describe ApplicationController do
         :password => "rainbows"
       }
       post '/signup', params
-      get '/signup'
+      # get '/signup'
       expect(last_response.location).to include('/tweets')
     end
   end
@@ -96,7 +96,7 @@ describe ApplicationController do
         :password => "kittens"
       }
       post '/login', params
-      get '/login'
+      # get '/login'
       expect(last_response.location).to include("/tweets")
     end
   end
