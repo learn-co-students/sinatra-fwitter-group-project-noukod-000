@@ -1,12 +1,3 @@
-<!-- Welcome, <%= @user.username %>
-<h2> Tweets: </h2>
-
-<% Tweet.all.each do |tweet| %>
-  <div>
-    <%= tweet.content %>
-  </div>
-<% end %> -->
-
 <h1>Welcome, <%= @user.username %></h1>
 
 <% @tweets.each do |tweet| %>
