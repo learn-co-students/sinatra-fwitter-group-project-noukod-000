@@ -3,26 +3,35 @@ require './config/environment'
 class ApplicationController < Sinatra::Base
 
   configure do
+    enable :sessions
+    set :session_secret, "fwitter_secret"
     set :public_folder, 'public'
     set :views, 'app/views'
-    enable :sessions
-    set:session_secret, "fwitter_secret"
   end
 
   get '/' do
     erb :index
   end
 
-  helpers do
+  get '/signup' do
+    if !session[:id].nil?
+      redirect '/tweets'
+    end
 
-    def logged_in?
-      !!current_user
+    erb :'users/signup'
+  end
+
+  helpers do
+    def is_logged_in?
+      !session[:id].nil?
     end
 
     def current_user
-      @current_user ||= User.find_by(id: session[:user_id]) if session[:user_id]
+      if is_logged_in?
+        User.find(session[:id])
+      else
+        nil
+      end
     end
-
   end
-
 end
