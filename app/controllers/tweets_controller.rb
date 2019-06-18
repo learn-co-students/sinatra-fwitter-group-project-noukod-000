@@ -26,7 +26,7 @@ class TweetsController < ApplicationController
             redirect to "/tweets/new"
           end
       else
-          redirect to '/login'
+          redirect to "/login"
       end
     end
 
@@ -48,7 +48,7 @@ class TweetsController < ApplicationController
             redirect to "/tweets/new"
           end
       else
-          redirect to '/login'
+          redirect to "/login"
       end
     end
 
@@ -70,7 +70,7 @@ class TweetsController < ApplicationController
             redirect to "/tweets/new"
           end
       else
-          redirect to '/login'
+          redirect to "/login"
       end
     end
 
@@ -79,7 +79,7 @@ class TweetsController < ApplicationController
         @tweet = Tweet.find_by_id(params[:id])
         erb :'tweets/show_tweet'
       else
-        redirect to '/login'
+        redirect to "/login"
       end
     end
 
@@ -89,15 +89,27 @@ class TweetsController < ApplicationController
         if @tweet && @tweet.user == Helpers.current_user(session)
           erb :'tweets/edit_tweet'
         else
-          redirect to '/tweets'
+          redirect to "/tweets"
         end
       else
-        redirect to '/login'
+        redirect to "/login"
       end
 
     end
 
     patch "/tweets/:id" do
-
-    end 
+      content = params[:content]
+      if Helpers.is_logged_in?(session)
+          @tweet = Tweet.find(params[:id])
+          if @tweet && @tweet.user == Helpers.current_user(session) && !content.empty?
+            @tweet.content = content
+            @tweet.save
+            redirect to "/tweets/#{@tweet.id}"
+          else
+            redirect to "/tweets/#{@tweet.id}/edit"
+          end
+      else
+          redirect to "/login"
+      end
+    end
 end
