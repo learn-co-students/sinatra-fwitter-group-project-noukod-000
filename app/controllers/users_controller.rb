@@ -34,8 +34,12 @@ end
       session.clear
       redirect to "/login"
     else
-      session.clear
       redirect to "/"
     end
+  end
+
+  get "/users/:slug" do
+      @user = User.find_by_slug(params[:slug])
+      erb "/users/show".to_sym
   end
 end
