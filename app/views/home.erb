@@ -1,0 +1,6 @@
+<% if Helpers.is_logged_in? session %>
+
+    <p>Hi, <%=Helpers.current_user(session).name %></p>
+
+<%end %>
+
